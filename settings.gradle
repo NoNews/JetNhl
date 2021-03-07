@@ -1,2 +1,3 @@
 rootProject.name = "NhlCompose"
 include ':app'
+include ':data'

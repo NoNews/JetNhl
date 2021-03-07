@@ -1,93 +1,53 @@
 package com.stats.nhlcompose.teams
 
-import android.os.Handler
-import android.os.Looper
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.data.features.TeamsRepository
 import com.stats.nhlcompose.R
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
-class TeamsViewModel : ViewModel() {
+class TeamsViewModel(private val repository: TeamsRepository) : ViewModel() {
 
-    private val state: MutableState<TeamsScreenContract.State> = mutableStateOf(TeamsScreenContract.State.Idle)
+    private val state: MutableState<TeamsScreenContract.State> =
+        mutableStateOf(TeamsScreenContract.State.Idle)
 
 
     init {
-        state.value = TeamsScreenContract.State.Loading
+        viewModelScope.launch {
+            observeTeams()
+        }
 
-        Handler(Looper.getMainLooper()).postDelayed(
-            {
-                state.value = TeamsScreenContract.State.Content(
-                    teams = listOf(
-                        TeamCardUiModel(
-                            "Arizona Coyotis",
-                            R.drawable.ic_arizona
-                        ),
-                        TeamCardUiModel(
-                            "Sent Luis Blues",
-                            R.drawable.ic_blues
-                        ),
+    }
 
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
-                        ),
-                        TeamCardUiModel(
-                            "Bostom Bruins",
-                            R.drawable.ic_bruins
+    private suspend fun observeTeams() {
+        repository.observeTeams(forceReload = false)
+            .map { data ->
+                val state = when {
+                    data.content != null -> {
+                        val teams = requireNotNull(data.content)
+                        TeamsScreenContract.State.Content(
+                            teams = teams.map { team ->
+                                TeamCardUiModel(
+                                    name = team.name,
+                                    drawableRes = team.toImageRes(),
+                                    subtitle = team.fistYearOfPlay
+                                )
+                            }
                         )
-                    )
-                )
-            }, 2000
-        )
+                    }
+                    data.loading && data.content == null -> {
+                        TeamsScreenContract.State.Loading
+                    }
+                    else -> TeamsScreenContract.State.Loading
+                }
+                state
+            }.collect { model ->
+                state.value = model
+            }
     }
 
 
