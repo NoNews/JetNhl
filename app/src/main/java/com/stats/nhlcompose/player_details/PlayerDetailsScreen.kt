@@ -8,19 +8,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.transform.CircleCropTransformation
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
-fun PlayerDetailsScreen(inputData: PlayerDetailsScreenContract.InputData) {
+fun PlayerDetailsScreen(
+    inputData: PlayerDetailsScreenContract.InputData,
+    viewModel: PlayerDetailsViewModel = viewModel(factory = PlayerDetailsViewModelFactory(inputData))
+) {
 
     Column {
 
-        Box(Modifier.fillMaxWidth().height(180.dp)) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+        ) {
             CoilImage(
                 data = "https://cms.nhl.bamgrid.com/images/actionshots/8479318@2x.jpg",
                 contentDescription = "Player image",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .height(154.dp),
                 contentScale = ContentScale.FillBounds
             )
@@ -30,14 +39,17 @@ fun PlayerDetailsScreen(inputData: PlayerDetailsScreenContract.InputData) {
                 requestBuilder = {
                     transformations(CircleCropTransformation())
                 },
-                modifier = Modifier.size(56.dp).align(Alignment.BottomCenter)
+                modifier = Modifier
+                    .size(56.dp)
+                    .align(Alignment.BottomCenter)
             )
         }
 
         Text(
             text = "Connor MCDavid",
             style = MaterialTheme.typography.h5,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
                 .padding(16.dp)
         )
 

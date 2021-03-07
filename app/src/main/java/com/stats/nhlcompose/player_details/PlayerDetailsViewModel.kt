@@ -4,20 +4,20 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
-class PlayerDetailsViewModel : ViewModel() {
+class PlayerDetailsViewModel(inputData: PlayerDetailsScreenContract.InputData) : ViewModel() {
 
     private val state: MutableState<PlayerDetailsScreenContract.State> =
         mutableStateOf(PlayerDetailsScreenContract.State.Idle)
 
-
     init {
 
     }
-
 
     fun observeState() = state
 
     override fun onCleared() {
         super.onCleared()
     }
+
+
 }

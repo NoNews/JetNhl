@@ -21,7 +21,7 @@ import com.stats.nhlcompose.players.PlayersScreenContract
 @ExperimentalFoundationApi
 @Composable
 fun TeamsScreen(
-    viewModel: TeamsViewModel = viewModel(),
+    viewModel: TeamsViewModel = viewModel(factory = TeamsViewModelFactory()),
     navController: NavController
 ) {
     val state: TeamsScreenContract.State by viewModel.observeState()

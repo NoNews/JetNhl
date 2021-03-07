@@ -21,7 +21,7 @@ import com.stats.nhlcompose.player_details.PlayerDetailsScreenContract
 fun PlayersScreen(
     inputData: PlayersScreenContract.InputData,
     navController: NavController,
-    viewModel: PlayersViewModel = viewModel()
+    viewModel: PlayersViewModel = viewModel(factory = PlayersViewModelFactory(inputData))
 ) {
     val state: PlayersScreenContract.State by viewModel.observeState()
 

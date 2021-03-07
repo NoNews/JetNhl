@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
-class PlayersViewModel : ViewModel() {
+class PlayersViewModel(private val teamId: PlayersScreenContract.InputData) : ViewModel() {
 
     private val state: MutableState<PlayersScreenContract.State> =
         mutableStateOf(PlayersScreenContract.State.Idle)
